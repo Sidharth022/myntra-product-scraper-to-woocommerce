@@ -13,7 +13,7 @@ This JavaScript tool lets you scrape product details from **Myntra's product lis
 1. Open a product listing page on [Myntra](https://www.myntra.com)
 2. Open **Chrome DevTools** (`F12` or `Ctrl+Shift+I`)
 3. Go to the **Console tab**
-4. Paste and run `scraper.js` script
+4. Paste and run  script
 5. The file will auto-download as CSV or JSON
 
 ## 📁 Example Output
@@ -29,4 +29,4 @@ For educational and non-commercial use only. Respect website terms and condition
 `myntra scraper`, `woocommerce import`, `myntra product export`, `csv exporter`, `ecommerce scraping`, `javascript scraper`, `woocommerce automation`, `headless scraping`
 
 ## 👨‍💻 Author
-Made by Sidharth Gaur (https://github.com/YOUR_USERNAME)
+Made by Sidharth Gaur (https://github.com/Sidharth022)
