@@ -4,11 +4,43 @@
 2. total page 
 3. category 
 5. filename change
-
 */
 
 
 (async function () {
+    
+    var loadingData =  `<div class="main-site-container">
+    <style>
+        .main-container-inside{
+            position: fixed;
+            top:0;
+            left:0;
+            width: 100%;
+            height: 100%;
+            z-index: 999;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            display:flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .mb-2{
+            margin-bottom: 20px;
+        }
+    </style>
+        <div class="main-container-inside">
+            <div>
+                <h2 class="pages mb-2"> Pages: <span class="done-page"> 0 </span> / <span class="total-page">1</span> </h2>
+                <h2 class="count-products"> <span class="download-percentage"> </span> Downloaded...   </h2>
+            </div>
+        </div>
+    </div>`;
+    var tempWrapper = document.createElement('div');
+    tempWrapper.innerHTML = loadingData;
+
+    // Append the parsed DOM
+    document.body.appendChild(tempWrapper.firstElementChild);
+
    function downloadWooCommerceCSV(products, filename = "mytra_men_shirt_products.csv") {
         const csvRows = [];
 
@@ -131,7 +163,7 @@
             const fullData = JSON.parse(match[1]);
             const pdpData = fullData?.pdpData;
             
-
+            
             const description =  `${pdpData.productDetails[0].description}`;
             const variants = [];
             
@@ -164,16 +196,21 @@
         }
     }
 
-    const totalPages = 0; // change this to the actual total number of pages
+    const totalPages = 2; // change this to the actual total number of pages
     const allProducts = [];
-    let ID =  35157; // Always change with last id of products listing in site 
-        for (let page = 0; page <= totalPages; page++) {
+    let ID =  4609; // Always change with last id of products listing in site 
+
+    document.querySelector('.total-page').innerHTML =  totalPages;
+    
+
+
+    for (let page = 1; page <= totalPages; page++) {
             const productCards = document.querySelectorAll('.product-base');
+          
+            let index = 0;
             for (const card of productCards) {
-
                 card.scrollIntoView({ behavior: 'instant', block: 'center' });
-                await sleep(1000);
-
+                await sleep(500);
 
                 const mouseOverEvent = new MouseEvent('mouseover', {
                     bubbles: true,
@@ -183,12 +220,12 @@
                 card.dispatchEvent(mouseOverEvent);
 
                 // Wait briefly to allow DOM updates (for lazy-loaded images)
-                await sleep(1500);
+                await sleep(1000);
 
                 ID++;
                 const title = card.querySelector('.product-product')?.textContent.trim();
                 const price = card.querySelector('.product-discountedPrice')?.textContent.trim() || card.querySelector('.product-price')?.textContent.trim() ;
-                const category = 'Mordern Suits';
+                const category = 'Tables';
               
 
                  // Trigger mouseover to reveal slider images
@@ -203,32 +240,43 @@
                 // Extract everything from "/assets/images/..." onwards
                 // Final clean URL
                 var mainImage =  `https://assets.myntassets.com${path}`;
-                var imagesarray = sliderImages.length > 0 ? Array.from(new Set(sliderImages)) : [mainImage]; 
+                var imagesarray = sliderImages.length > 0 ? Array.from(new Set([mainImage,...sliderImages])) : [mainImage]; 
                 const url = 'https://www.myntra.com/' + card.querySelector('a')?.getAttribute('href');
                 const { description, variants } = await getSingleProductDetails(url);
-
+                
                 if (!path) continue;
                 allProducts.push({
                     ID, title, price, description, url, category, imagesarray, variants
                 });
+
+
+                document.querySelector('.download-percentage').innerHTML =  `${ Math.floor(( index / productCards.length ) * 100 )} % `;
+                index++;
             }
+        document.querySelector('.done-page').innerHTML =  page;
         console.log(`Page ${page} done`);
         
-
         //  Go to next page
-        document.querySelector('.pagination-next').click();
+        if(document.querySelectorAll('.pagination-next').length > 0 ){
+            document.querySelector('.pagination-next').click();
+        }
 
         //  Wait for the new page to load
-        await sleep(1500); // allow time for new products to render
+        await sleep(1000); // allow time for new products to render
 
         //  Now scroll to the bottom to lazy-load all products on this page
         await autoScrollToBottom();
 
         //  Optionally wait more to ensure all images loaded
-        await sleep(1000)
+        await sleep(500)
     }
     console.log(allProducts)
-    downloadWooCommerceCSV(allProducts);
+    document.querySelector('.main-site-container').innerHTML = "";
+    if(allProducts.length > 0 ){
+        downloadWooCommerceCSV(allProducts);
+    }else{
+        alert('product Not Found');
+    }
 })();
 
 
