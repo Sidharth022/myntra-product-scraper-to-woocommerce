@@ -18,7 +18,7 @@ This JavaScript tool lets you scrape product details from **Myntra's product lis
 
 ## 📁 Example Output
 - [sample_output.csv](./sample_output.csv)
-- [sample_output.json](./sample_output.json)
+- [sample_output.json](./json-preview)
 
 ## ⚠️ Disclaimer
 For educational and non-commercial use only. Respect website terms and conditions.
